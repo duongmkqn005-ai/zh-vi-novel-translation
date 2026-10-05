@@ -77,10 +77,13 @@ class ToolsTest(unittest.TestCase):
 
     def test_destination_mapping_without_touching_real_profile(self):
         with tempfile.TemporaryDirectory() as scratch:
-            with patch.object(installer.Path, 'home', return_value=Path(scratch)), patch.dict(installer.os.environ, {}, clear=True):
+            # macOS exposes its temporary directory via /var -> /private/var.
+            # Mock a canonical home/project, as managed installs reject linked ancestors.
+            scratch_root = Path(scratch).resolve()
+            with patch.object(installer.Path, 'home', return_value=scratch_root), patch.dict(installer.os.environ, {}, clear=True):
                 for harness, relative in installer.GLOBAL_DIRS.items():
-                    self.assertEqual(installer.destination(harness, 'user'), Path(scratch) / relative / installer.NAME)
-            project = Path(scratch) / 'myproject'
+                    self.assertEqual(installer.destination(harness, 'user'), scratch_root / relative / installer.NAME)
+            project = scratch_root / 'myproject'
             self.assertEqual(installer.destination('claude-code', 'project', str(project)), project / '.claude/skills' / installer.NAME)
 
     def test_export_modes_include_requested_raw_resources_once(self):
