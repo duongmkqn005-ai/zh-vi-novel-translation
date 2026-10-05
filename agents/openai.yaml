@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dịch tiểu thuyết Trung–Việt"
+  short_description: "Dịch truyện, tra tiếng lóng, giữ tên và xưng hô"
+  default_prompt: "Dùng $zh-vi-novel-translation dịch chương truyện này sang tiếng Việt tự nhiên, sát ý, tên Hán–Việt và giữ giọng từng nhân vật."
